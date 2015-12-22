@@ -3,19 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class CamSwitch : MonoBehaviour {
-	public List<GameObject> characters = new List<GameObject> (4);
+	public List<GameObject> characters = new List<GameObject> (2);
 	int activeCharacter = 0;
-	void LateUpdate () {
-		if (Input.GetKeyUp (KeyCode.UpArrow)) {
-			activeCharacter = 0;
-		} else if (Input.GetKeyUp (KeyCode.LeftArrow)) {
-			activeCharacter = 1;
-		} else if (Input.GetKeyUp (KeyCode.DownArrow)) {
-			activeCharacter = 2;
-		} else if (Input.GetKeyUp (KeyCode.RightArrow)) {
-			activeCharacter = 3;
+	Oxpecker_Control oxc;
+    void LateUpdate () {
+		if (Input.GetKeyUp (KeyCode.Space) && characters[activeCharacter].GetComponent<Generic_Control> ().canSwitch ()) {
+			if ((oxc = characters[activeCharacter].GetComponent<Oxpecker_Control> ()) != null) oxc.onSwitchAway ();
+			activeCharacter = 1 - activeCharacter;
 		}
-		Vector3 goal = characters[activeCharacter].transform.position + Vector3.forward*-10;
+		characters[activeCharacter].GetComponent<Generic_Control> ().isEnabled = true;
+		characters[1 - activeCharacter].GetComponent<Generic_Control> ().isEnabled = false;
+		Vector3 goal = characters[activeCharacter].transform.position + Vector3.forward * -10;
 		transform.position = Vector3.Lerp (transform.position,goal,0.05f);
     }
 }
