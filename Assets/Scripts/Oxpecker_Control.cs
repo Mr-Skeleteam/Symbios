@@ -11,8 +11,11 @@ public class Oxpecker_Control : MonoBehaviour {
 		InvokeRepeating ("flightReduce",0,0.1f);
 	}
 	void FixedUpdate () {
-		rb.AddForce (Vector2.up * Input.GetAxis ("Vertical") * Mathf.Clamp (getFlightStrength (90 - flight),0,50));
-		rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * Mathf.Clamp (getFlightStrength (90 - flight),0,30));
+		if (GetComponent<Generic_Control> ().isEnabled) {
+			rb.AddForce (Vector2.up * Input.GetAxis ("Vertical") * Mathf.Clamp (getFlightStrength (90 - flight),0,50));
+			rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * Mathf.Clamp (getFlightStrength (90 - flight),0,30));
+		}
+		
 	}
 	float getFlightStrength (int input) {
 		return -12 * (Mathf.Pow (1.018079f,input)) + 60;
@@ -34,6 +37,13 @@ public class Oxpecker_Control : MonoBehaviour {
 	void flightRegen () {
 		if (flight < 100) {
 			flight++;
+		}
+	}
+	public void onSwitchAway () {
+		RaycastHit2D hit = Physics2D.Raycast (transform.position,Vector2.down,0.5f,LayerMask.NameToLayer ("Rhino"));
+		Debug.DrawRay (transform.position,Vector2.down);
+        if (!hit.Equals (null)) {
+			transform.parent = hit.transform;
 		}
 	}
 }
