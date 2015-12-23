@@ -20,7 +20,7 @@ public class Rhino_Control : MonoBehaviour {
 		}
 	}
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.W) && canJump) {
+		if (Input.GetKeyDown (KeyCode.W) && canJump && GetComponent<Generic_Control> ().isEnabled) {
 			rb.AddForce (Vector2.up * 2500,ForceMode2D.Impulse);
 		}
 	}
