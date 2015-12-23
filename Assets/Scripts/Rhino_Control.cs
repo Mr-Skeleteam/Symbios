@@ -10,18 +10,16 @@ public class Rhino_Control : MonoBehaviour {
 		land = transform.GetChild (1).gameObject.GetComponent<ParticleSystem> ();
 		canJump = true;
 	}
-	void FixedUpdate () {
+	void Update () {
 		if (GetComponent<Generic_Control> ().isEnabled) {
 			if (canJump) {
-				rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 500,ForceMode2D.Impulse);
+				rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 1000,ForceMode2D.Impulse);
 				float y = rb.velocity.y;
-				rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x,-10,10),y);
+				rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x,-5f,5f),y);
+				if (Input.GetKeyDown (KeyCode.W)) {
+					rb.AddForce (Vector2.up * 1750,ForceMode2D.Impulse);
+				}
 			}
-		}
-	}
-	void Update () {
-		if (Input.GetKeyDown (KeyCode.W) && canJump && GetComponent<Generic_Control> ().isEnabled) {
-			rb.AddForce (Vector2.up * 2500,ForceMode2D.Impulse);
 		}
 	}
 	void OnCollisionEnter2D (Collision2D other) {
