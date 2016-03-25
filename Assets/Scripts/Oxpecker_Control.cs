@@ -9,6 +9,9 @@ public class Oxpecker_Control : MonoBehaviour {
 	Vector3 lastFrame;
 	Vector3 currentFrame;
 	Vector3 rhinoDifference;
+	public int Strength = 5; //get stronk
+	
+	bool hasHit = false;
 	void Awake () {
 		currentFrame = parent.transform.position;
 	}
@@ -25,6 +28,7 @@ public class Oxpecker_Control : MonoBehaviour {
 			}
 			transform.position = parent.transform.position + Vector3.up * 0.4f;
 			transform.rotation = parent.transform.rotation;
+			hasHit = false;
 		} else {
 			switch (attackState) {
 				case 1:
@@ -49,29 +53,38 @@ public class Oxpecker_Control : MonoBehaviour {
 		rhinoDifference = Vector3.zero;
 	}
 	void Up () {
-		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.up * 2 + rhinoDifference,(Time.time - animationStartTime) * 5);
+		transform.rotation = Quaternion.Euler (0,90,0);
+		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.up * 4 + rhinoDifference,(Time.time - animationStartTime) * 5);
 		rhinoDifference += currentFrame - lastFrame;
-		if ((Time.time - animationStartTime) * 10 > 1) {
+		if ((Time.time - animationStartTime) * 7 > 1 || hasHit) {
 			transform.position = startPos + rhinoDifference;
 			attackState = 0;
 		}
 	}
 	void Right () {
 		transform.rotation = Quaternion.Euler (0,0,0);
-		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.right * 2 + rhinoDifference,(Time.time - animationStartTime) * 2.5f);
+		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.right * 4 + rhinoDifference,(Time.time - animationStartTime) * 5);
 		rhinoDifference += currentFrame - lastFrame;
-		if ((Time.time - animationStartTime) * 10 > 1) {
+		if ((Time.time - animationStartTime) * 7 > 2 || hasHit) {
 			transform.position = startPos + rhinoDifference;
 			attackState = 0;
 		}
 	}
 	void Left () {
 		transform.rotation = Quaternion.Euler (0,180,0);
-		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.left * 2 + rhinoDifference,(Time.time - animationStartTime) * 2.5f);
+		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.left * 4 + rhinoDifference,(Time.time - animationStartTime) * 5);
 		rhinoDifference += currentFrame - lastFrame;
-		if ((Time.time - animationStartTime) * 10 > 1) {
+		if ((Time.time - animationStartTime) * 7 > 2 || hasHit) {
 			transform.position = startPos + rhinoDifference;
 			attackState = 0;
+		}
+	}
+	
+	void OnTriggerEnter2D (Collider2D other) {
+		if (other.gameObject.tag == "EnemyHitbox" && !hasHit && attackState != 0) {
+			hasHit = true;
+			other.gameObject.transform.parent.gameObject.SendMessage ("Knockback", Strength * 10 * (transform.position - parent.transform.position), SendMessageOptions.DontRequireReceiver);
+			other.gameObject.transform.parent.gameObject.SendMessage ("TakeDamage", Strength, SendMessageOptions.DontRequireReceiver);
 		}
 	}
 }

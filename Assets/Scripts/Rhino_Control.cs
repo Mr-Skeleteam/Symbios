@@ -13,17 +13,21 @@ public class Rhino_Control : MonoBehaviour {
 		move = transform.GetChild (1).gameObject.GetComponent<ParticleSystem> ();
 		canJump = true;
 	}
-	void Update () {
+	void FixedUpdate () {
 		if (canJump) {
 			rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 1000,ForceMode2D.Impulse);
 			//rb.MovePosition (transform.position + Input.GetAxis ("Horizontal") * Vector3.right * Time.deltaTime * 10);
-			float y = rb.velocity.y;
-			rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x,-5f,5f),y);
+			/*
+			if (Mathf.Abs (rb.velocity.x) > 5) {
+				rb.AddForce (Vector2.right * 500 * (-rb.velocity.x/Mathf.Abs (rb.velocity.x)), ForceMode2D.Impulse);
+			}
+			*/
+			rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x,-5f,5f),rb.velocity.y);
 			if (Input.GetKeyDown (KeyCode.W)) {
 				rb.AddForce (Vector2.up * 1750,ForceMode2D.Impulse);
 			}
 		}
-		if (isGrounded && rb.velocity.sqrMagnitude > 0) {
+		if (isGrounded && rb.velocity.sqrMagnitude > 0.01f) {
 			if (!move.isPlaying) {
 				move.Play ();
 			}
@@ -35,8 +39,8 @@ public class Rhino_Control : MonoBehaviour {
 	}
 	void OnCollisionEnter2D (Collision2D other) {
 		if (other.gameObject.tag == "Ground") {
-			canJump = true;
 			isGrounded = true;
+			StartCoroutine (landCooldown ());
 		}
 	}
 	void OnCollisionExit2D (Collision2D other) {
@@ -47,7 +51,7 @@ public class Rhino_Control : MonoBehaviour {
 	}
 	IEnumerator landCooldown () {
 		land.Play ();
-		yield return new WaitForSeconds (0.5f);
+		yield return new WaitForSeconds (0.1f);
 		canJump = true;
 	}
 }
