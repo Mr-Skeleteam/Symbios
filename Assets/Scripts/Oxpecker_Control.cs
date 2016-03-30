@@ -83,8 +83,11 @@ public class Oxpecker_Control : MonoBehaviour {
 	void OnTriggerEnter2D (Collider2D other) {
 		if (other.gameObject.tag == "EnemyHitbox" && !hasHit && attackState != 0) {
 			hasHit = true;
-			other.gameObject.transform.parent.gameObject.SendMessage ("Knockback", Strength * 10 * (transform.position - parent.transform.position), SendMessageOptions.DontRequireReceiver);
-			other.gameObject.transform.parent.gameObject.SendMessage ("TakeDamage", Strength, SendMessageOptions.DontRequireReceiver);
+			GameObject enemy = other.gameObject.transform.parent.gameObject;
+			if (enemy.GetComponent<Enemy_Ai> ().health > 0) {
+				enemy.SendMessage ("Knockback", Strength * 10 * (transform.position - parent.transform.position), SendMessageOptions.DontRequireReceiver);
+				enemy.SendMessage ("TakeDamage", Strength, SendMessageOptions.DontRequireReceiver);
+			}
 		}
 	}
 }
