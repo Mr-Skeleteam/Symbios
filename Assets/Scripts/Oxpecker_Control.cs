@@ -56,7 +56,7 @@ public class Oxpecker_Control : MonoBehaviour {
 		transform.rotation = Quaternion.Euler (0,90,0);
 		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.up * 4 + rhinoDifference,(Time.time - animationStartTime) * 5);
 		rhinoDifference += currentFrame - lastFrame;
-		if ((Time.time - animationStartTime) * 7 > 1 || hasHit) {
+		if ((Time.time - animationStartTime) * 7 > 0.5f || hasHit) {
 			transform.position = startPos + rhinoDifference;
 			attackState = 0;
 		}
@@ -65,7 +65,7 @@ public class Oxpecker_Control : MonoBehaviour {
 		transform.rotation = Quaternion.Euler (0,0,0);
 		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.right * 4 + rhinoDifference,(Time.time - animationStartTime) * 5);
 		rhinoDifference += currentFrame - lastFrame;
-		if ((Time.time - animationStartTime) * 7 > 2 || hasHit) {
+		if ((Time.time - animationStartTime) * 7 > 1 || hasHit) {
 			transform.position = startPos + rhinoDifference;
 			attackState = 0;
 		}
@@ -74,7 +74,7 @@ public class Oxpecker_Control : MonoBehaviour {
 		transform.rotation = Quaternion.Euler (0,180,0);
 		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.left * 4 + rhinoDifference,(Time.time - animationStartTime) * 5);
 		rhinoDifference += currentFrame - lastFrame;
-		if ((Time.time - animationStartTime) * 7 > 2 || hasHit) {
+		if ((Time.time - animationStartTime) * 7 > 1 || hasHit) {
 			transform.position = startPos + rhinoDifference;
 			attackState = 0;
 		}

@@ -27,6 +27,19 @@ public class Generic_Control : MonoBehaviour {
 		return (rb.velocity.magnitude <= 0.01f);
 	}
 	
+	public void OnGUI () {
+		Texture2D Red = new Texture2D (1,1);
+		Red.SetPixel (1,1,Color.red);
+		Red.Apply ();
+		Texture2D Green = new Texture2D (1,1);
+		Green.SetPixel (1,1,Color.green);
+		Green.Apply ();
+		Vector3 pos = Camera.main.WorldToScreenPoint (transform.position);
+		Vector3 screenPos = new Vector2 (pos.x,Camera.main.pixelHeight - pos.y);
+		GUI.DrawTexture (new Rect (screenPos + new Vector3 (-40, -100),new Vector2 (80,10)), Red);
+		GUI.DrawTexture (new Rect (screenPos + new Vector3 (-40, -100),new Vector2 (80 * health / maxHealth,10)),Green);
+	}
+
 	public void TakeDamage (int Damage) {
 		if (health > 0) {
 			health -= Damage;

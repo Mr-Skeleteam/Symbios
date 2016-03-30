@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Enemy_Ai : MonoBehaviour {
-
+	public GameObject Projectile;
 	GameObject player;
 	Rigidbody2D rb;
 	public int sight = 10;
@@ -11,6 +11,7 @@ public class Enemy_Ai : MonoBehaviour {
 	public int health;
 	public int maxHealth;
 	bool alive;
+	bool inAttack = false;
 	
 	public enum State {
 		IDLE,
@@ -40,9 +41,13 @@ public class Enemy_Ai : MonoBehaviour {
 						Vector2 flatDirectionToPlayer = player.transform.position - transform.position;
 						flatDirectionToPlayer.y = 0;
 						flatDirectionToPlayer.Normalize ();
-						if (Vector3.Distance (transform.position, player.transform.position) > .1f) {
+						if (Vector3.Distance (transform.position, player.transform.position) > 5) {
 							rb.AddForce (flatDirectionToPlayer * 2000);
 							rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x, -speed, speed), rb.velocity.y);
+						} else {
+							if (!inAttack) {
+								Attack ();
+							}
 						}
 					}
 					Quaternion finalRot = Quaternion.identity;
@@ -101,5 +106,28 @@ public class Enemy_Ai : MonoBehaviour {
 	
 	void reddify () {
 		GetComponent<SpriteRenderer> ().color = Color.red;
+	}
+
+	void Attack () { 
+		GameObject proj = (GameObject) Instantiate (Projectile,transform.position,Quaternion.identity);
+		proj.SendMessage ("Launch",(player.transform.position + Vector3.up * ((Random.value * 2) - 1)) - transform.position);
+		StartCoroutine (AttackCooldown ());
+	}
+
+	IEnumerator AttackCooldown () {
+		inAttack = true;
+		yield return new WaitForSeconds (2);
+		inAttack = false;
+	}
+
+	bool CloseToAllies (float distance) {
+		bool result = false;
+		foreach (GameObject obj in GameObject.FindGameObjectsWithTag ("Enemy")) {
+			if (Vector3.Distance (obj.transform.position, transform.position) < distance) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 }

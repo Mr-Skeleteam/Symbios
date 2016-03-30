@@ -16,16 +16,7 @@ public class Rhino_Control : MonoBehaviour {
 	void FixedUpdate () {
 		if (canJump) {
 			rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 1000,ForceMode2D.Impulse);
-			//rb.MovePosition (transform.position + Input.GetAxis ("Horizontal") * Vector3.right * Time.deltaTime * 10);
-			/*
-			if (Mathf.Abs (rb.velocity.x) > 5) {
-				rb.AddForce (Vector2.right * 500 * (-rb.velocity.x/Mathf.Abs (rb.velocity.x)), ForceMode2D.Impulse);
-			}
-			*/
 			rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x,-5f,5f),rb.velocity.y);
-			if (Input.GetKeyDown (KeyCode.W)) {
-				rb.AddForce (Vector2.up * 1750,ForceMode2D.Impulse);
-			}
 		}
 		if (isGrounded && rb.velocity.sqrMagnitude > 0.01f) {
 			if (!move.isPlaying) {
@@ -37,10 +28,26 @@ public class Rhino_Control : MonoBehaviour {
 			}
 		}
 	}
+	void Update () {
+		if (canJump) {
+			if (Input.GetKeyDown (KeyCode.W)) {
+				rb.AddForce (Vector2.up * 1750,ForceMode2D.Impulse);
+			}
+		}
+	}
 	void OnCollisionEnter2D (Collision2D other) {
 		if (other.gameObject.tag == "Ground") {
 			isGrounded = true;
-			StartCoroutine (landCooldown ());
+			//StartCoroutine (landCooldown ());
+			land.Play ();
+			RaycastHit2D rayToGround = Physics2D.Raycast (transform.position,Vector2.down,100,LayerMask.NameToLayer ("Ground"));
+			foreach (GameObject enemy in GameObject.FindGameObjectsWithTag ("Enemy")) {
+				if (Vector3.Distance (enemy.transform.position, transform.position) < 2 && enemy.GetComponent<Enemy_Ai> ().health > 0) {
+					enemy.SendMessage ("Knockback", Vector3.up * 100);
+					enemy.SendMessage ("TakeDamage",4);
+				}
+			}
+			canJump = true;
 		}
 	}
 	void OnCollisionExit2D (Collision2D other) {
