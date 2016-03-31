@@ -33,7 +33,8 @@ public class Enemy_Ai : MonoBehaviour {
 	public State currentState = State.IDLE;
 	
 	public void FixedUpdate () {
-		if (alive) {
+		if (alive && !Camera.main.GetComponent<MainMenu> ().inLoad) {
+			player = GameObject.Find ("Rhino");
 			switch (currentState) {
 				case State.IDLE:
 					if (Vector3.Distance (player.transform.position, transform.position) <= sight) {

@@ -9,6 +9,6 @@ public class SpawnEnemy : MonoBehaviour {
 	}
 	
 	void Spawn () {
-		Instantiate (enemy, transform.position + Vector3.right * ((Random.value * 2)-1) * 10, Quaternion.identity);
+		if (!Camera.main.GetComponent<MainMenu> ().inLoad) Instantiate (enemy, transform.position + Vector3.right * ((Random.value * 2)-1) * 10, Quaternion.identity);
 	}
 }

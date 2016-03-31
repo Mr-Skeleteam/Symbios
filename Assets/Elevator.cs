@@ -15,22 +15,22 @@ public class Elevator : MonoBehaviour {
 		}
 	}
 	void Update () {
-		foreach (Rigidbody2D child in transform.GetComponentsInChildren<Rigidbody2D> ()) {
-		}
-		if (up) {
-			rb.MovePosition (rb.position + Vector2.up * 0.05f);
-			distTravelled += 0.05f;
-			if (distTravelled >= distance) {
-				up = false;
-				distTravelled = 0;
+		if (!Camera.main.GetComponent<MainMenu> ().inLoad) {
+			if (up) {
+				rb.MovePosition (rb.position + Vector2.up * 0.05f);
+				distTravelled += 0.05f;
+				if (distTravelled >= distance) {
+					up = false;
+					distTravelled = 0;
+				}
 			}
-		}
-		if (!up) {
-			rb.MovePosition (rb.position - Vector2.up * 0.05f);
-			distTravelled += 0.05f;
-			if (distTravelled >= distance) {
-			up = true;
-				distTravelled = 0;
+			if (!up) {
+				rb.MovePosition (rb.position - Vector2.up * 0.05f);
+				distTravelled += 0.05f;
+				if (distTravelled >= distance) {
+				up = true;
+					distTravelled = 0;
+				}
 			}
 		}
 	}

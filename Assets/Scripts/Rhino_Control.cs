@@ -18,28 +18,33 @@ public class Rhino_Control : MonoBehaviour {
 		canJump = true;
 	}
 	void Update () {
-		if (canJump) {
-			rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 1000,ForceMode2D.Impulse);
-			rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x,-5f,5f),rb.velocity.y);
-			if (Mathf.Abs (Input.GetAxis ("Horizontal")) < 0.1f) {
-				rb.velocity = new Vector2 (0,rb.velocity.y);
+		if (!Camera.main.GetComponent<MainMenu> ().inLoad) {
+			if (canJump) {
+				rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 1000,ForceMode2D.Impulse);
+				rb.velocity = new Vector2 (Mathf.Clamp (rb.velocity.x,-5f,5f),rb.velocity.y);
+				if (Mathf.Abs (Input.GetAxis ("Horizontal")) < 0.1f) {
+					rb.velocity = new Vector2 (0,rb.velocity.y);
+				}
+				if (Input.GetKeyDown (KeyCode.W)) {
+					rb.AddForce (Vector2.up * 2000,ForceMode2D.Impulse);
+				}
+			} else {
+				rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 10,ForceMode2D.Impulse);
 			}
-			if (Input.GetKeyDown (KeyCode.W)) {
-				rb.AddForce (Vector2.up * 2000,ForceMode2D.Impulse);
+			if (isGrounded && Mathf.Abs (Input.GetAxis ("Horizontal")) > 0.0001f) {
+				if (!move.isPlaying) {
+					move.Play ();
+					anim.SetBool ("IsWalking",true);
+				}
+			} else {
+				if (!move.isStopped) {
+					move.Stop ();
+					anim.SetBool ("IsWalking",false);
+				}
 			}
-		} else {
-			rb.AddForce (Vector2.right * Input.GetAxis ("Horizontal") * 10,ForceMode2D.Impulse);
 		}
-		if (isGrounded && Mathf.Abs (Input.GetAxis ("Horizontal")) > 0.0001f) {
-			if (!move.isPlaying) {
-				move.Play ();
-				anim.SetBool ("IsWalking",true);
-			}
-		} else {
-			if (!move.isStopped) {
-				move.Stop ();
-				anim.SetBool ("IsWalking",false);
-			}
+		if (transform.position.y < -10) {
+			Camera.main.SendMessage ("ReloadScene");
 		}
 	}
 	void OnCollisionEnter2D (Collision2D other) {
@@ -48,7 +53,7 @@ public class Rhino_Control : MonoBehaviour {
 			//StartCoroutine (landCooldown ());
 			land.Play ();
 			foreach (GameObject enemy in GameObject.FindGameObjectsWithTag ("Enemy")) {
-				if (Vector3.Distance (enemy.transform.position, transform.position) < 2 && enemy.GetComponent<Enemy_Ai> ().health > 0) {
+				if (Vector3.Distance (enemy.transform.position, transform.position) < 2 && enemy.transform.position.y >= transform.position.y && enemy.GetComponent<Enemy_Ai> ().health > 0) {
 					enemy.SendMessage ("Knockback", Vector3.up * 100 + Vector3.right * (enemy.transform.position-transform.position).x * 100);
 					enemy.SendMessage ("GetStomped");
 					enemy.SendMessage ("TakeDamage",5);

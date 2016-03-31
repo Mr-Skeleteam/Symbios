@@ -14,37 +14,39 @@ public class Oxpecker_Control : MonoBehaviour {
 	bool hasHit = false;
 	void Awake () {
 		currentFrame = parent.transform.position;
+		transform.position = parent.transform.position + Vector3.up * 0.6f;
 	}
 	void Update () {
-		lastFrame = currentFrame;
-		currentFrame = parent.transform.position;
-		if (attackState == 0) {
-			if (Input.GetKeyDown (KeyCode.UpArrow)) {
-				startAnimation (1);
-			} else if (Input.GetKeyDown (KeyCode.RightArrow)) {
-				startAnimation (2);
-			} else if (Input.GetKeyDown (KeyCode.LeftArrow)) {
-				startAnimation (3);
-			}
-			transform.position = parent.transform.position + Vector3.up * 0.6f;
-			transform.rotation = parent.transform.rotation;
-			hasHit = false;
-		} else {
-			switch (attackState) {
-				case 1:
-				Up ();
-				break;
+		if (!Camera.main.GetComponent<MainMenu> ().inLoad) {
+			lastFrame = currentFrame;
+			currentFrame = parent.transform.position;
+			if (attackState == 0) {
+				if (Input.GetKeyDown (KeyCode.UpArrow)) {
+					startAnimation (1);
+				} else if (Input.GetKeyDown (KeyCode.RightArrow)) {
+					startAnimation (2);
+				} else if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+					startAnimation (3);
+				}
+				transform.position = parent.transform.position + Vector3.up * 0.6f;
+				transform.rotation = parent.transform.rotation;
+				hasHit = false;
+			} else {
+				switch (attackState) {
+					case 1:
+					Up ();
+					break;
 
-				case 2:
-				Right ();
-				break;
+					case 2:
+					Right ();
+					break;
 
-				case 3:
-				Left ();
-				break;
+					case 3:
+					Left ();
+					break;
+				}
 			}
 		}
-
 	}
 	void startAnimation (int state) {
 		attackState = state;
