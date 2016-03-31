@@ -9,6 +9,6 @@ public class SpawnEnemy : MonoBehaviour {
 	}
 	
 	void Spawn () {
-		Instantiate (enemy, transform.position, Quaternion.identity);
+		Instantiate (enemy, transform.position + Vector3.right * ((Random.value * 2)-1) * 10, Quaternion.identity);
 	}
 }

@@ -7,6 +7,7 @@ public class Generic_Control : MonoBehaviour {
 	Quaternion goal;
 	public int health;
 	public int maxHealth;
+	public bool invincible = false;
 	
 	void Awake () {
 		rb = GetComponent<Rigidbody2D> ();
@@ -41,8 +42,19 @@ public class Generic_Control : MonoBehaviour {
 	}
 
 	public void TakeDamage (int Damage) {
-		if (health > 0) {
+		if (health > 0 && !invincible) {
 			health -= Damage;
+			StartCoroutine ("Invincibility",60);
 		}
+	}
+
+	IEnumerator Invincibility (int frames) {
+		invincible = true;
+		for (int i = 0; i < frames; i++) {
+			yield return new WaitForEndOfFrame ();
+			GetComponent<SpriteRenderer> ().enabled = i % 8 < 4;
+		}
+		GetComponent<SpriteRenderer> ().enabled = true;
+		invincible = false;
 	}
 }

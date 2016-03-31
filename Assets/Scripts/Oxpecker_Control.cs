@@ -26,7 +26,7 @@ public class Oxpecker_Control : MonoBehaviour {
 			} else if (Input.GetKeyDown (KeyCode.LeftArrow)) {
 				startAnimation (3);
 			}
-			transform.position = parent.transform.position + Vector3.up * 0.4f;
+			transform.position = parent.transform.position + Vector3.up * 0.6f;
 			transform.rotation = parent.transform.rotation;
 			hasHit = false;
 		} else {
@@ -53,7 +53,7 @@ public class Oxpecker_Control : MonoBehaviour {
 		rhinoDifference = Vector3.zero;
 	}
 	void Up () {
-		transform.rotation = Quaternion.Euler (0,90,0);
+		transform.rotation = Quaternion.Euler (0,0,90);
 		transform.position = Vector3.Lerp (startPos + rhinoDifference,startPos + Vector3.up * 4 + rhinoDifference,(Time.time - animationStartTime) * 5);
 		rhinoDifference += currentFrame - lastFrame;
 		if ((Time.time - animationStartTime) * 7 > 0.5f || hasHit) {
@@ -84,7 +84,7 @@ public class Oxpecker_Control : MonoBehaviour {
 		if (other.gameObject.tag == "EnemyHitbox" && !hasHit && attackState != 0) {
 			hasHit = true;
 			GameObject enemy = other.gameObject.transform.parent.gameObject;
-			if (enemy.GetComponent<Enemy_Ai> ().health > 0) {
+			if (enemy.GetComponent<Enemy_Ai> ().health > 0 && !parent.GetComponent<Generic_Control> ().invincible) {
 				enemy.SendMessage ("Knockback", Strength * 10 * (transform.position - parent.transform.position), SendMessageOptions.DontRequireReceiver);
 				enemy.SendMessage ("TakeDamage", Strength, SendMessageOptions.DontRequireReceiver);
 			}
